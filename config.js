@@ -6,7 +6,7 @@ module.exports = {
     ADMIN_TELEGRAM_ID: "8248792819", 
     
     // ⚠️ BotFather থেকে নেওয়া আপনার বটের টোকেন দিন
-    BOT_TOKEN: "8411636239:AAHI1_LaC2FrIflzZ3-uIvjA07bOp2uhWO4",
+    BOT_TOKEN: "8600984479:AAFtkrYCx_WNnp8zK8I34LoifqAD-t7rfOE",
 
     // পোর্ট অটোমেটিক সিলেক্ট হবে
     PORT: process.env.PORT || 5000
