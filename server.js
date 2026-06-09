@@ -328,6 +328,12 @@ app.get('/api/check-admin/:uid', async (req, res) => {
     res.json({ isAdmin: req.params.uid === config.ADMIN_TELEGRAM_ID }); 
 });
 
+// --- Error Handler ---
+app.use((err, req, res, next) => {
+    console.error('Server error:', err);
+    res.status(500).json({ error: 'Server error' });
+});
+
 // --- Server Start ---
 if (process.env.VERCEL) {
     module.exports = app;
