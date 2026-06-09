@@ -6,14 +6,23 @@
     <title>TeliTask Pro</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --primary: #0088cc; --primary-dark: #006699; --bg: #f0f2f5; --surface: #ffffff; --text: #1c1e21; --text-secondary: #65676b; --success: #31a24c; --danger: #fa383e; --warning: #ffc107; --border: #ddd; --shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        [data-theme="dark"] { --primary: #5eb3f3; --primary-dark: #3b89c6; --bg: #18191a; --surface: #242526; --text: #e4e6eb; --text-secondary: #b0b3b8; --border: #3e4042; --shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        :root { 
+            --primary: #0088cc; --primary-dark: #006699; --bg: #f0f2f5; --surface: #ffffff; 
+            --text: #1c1e21; --text-secondary: #65676b; --success: #31a24c; --danger: #fa383e; 
+            --warning: #ffc107; --border: #dadde1; --shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        [data-theme="dark"] { 
+            --primary: #5eb3f3; --primary-dark: #3b89c6; --bg: #18191a; --surface: #242526; 
+            --text: #e4e6eb; --text-secondary: #b0b3b8; --border: #3e4042; 
+            --shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: var(--bg); color: var(--text); transition: 0.3s; padding-bottom: 80px; }
         header { background: var(--surface); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 100; }
         .logo { font-size: 20px; font-weight: bold; color: var(--primary); display: flex; align-items: center; gap: 8px; }
         button { cursor: pointer; border: none; outline: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; transition: 0.2s; }
         .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
         .btn-danger { background: var(--danger); color: white; }
         .btn-warning { background: var(--warning); color: #000; }
         .btn-success { background: var(--success); color: white; }
@@ -37,16 +46,13 @@
         .notif-icon { font-size: 20px; }
         .notif-content h5 { font-size: 14px; margin-bottom: 2px; }
         .notif-content p { font-size: 12px; color: var(--text-secondary); }
-        .notif-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 5px; font-weight: bold; }
-        .notif-global { background: #e3f2fd; color: #0d47a1; }
-        .notif-personal { background: #e8f5e9; color: #1b5e20; }
         .tabs { display: flex; gap: 8px; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 8px; overflow-x: auto; }
         .tab { padding: 6px 14px; cursor: pointer; border-radius: 20px; font-size: 13px; white-space: nowrap; background: rgba(0,0,0,0.05); }
         .tab.active { background: var(--primary); color: white; }
-        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 10px 20px; border-radius: 20px; font-size: 13px; opacity: 0; transition: 0.3s; z-index: 999; pointer-events: none; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 10px 20px; border-radius: 20px; font-size: 13px; opacity: 0; transition: 0.3s; z-index: 1000; }
         .toast.show { opacity: 1; bottom: 40px; }
         .warning-banner { background: var(--danger); color: white; padding: 10px; text-align: center; font-size: 13px; font-weight: bold; display: none; }
-        #maintenanceOverlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: var(--bg); z-index: 2000; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+        #maintenanceOverlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: var(--bg); z-index: 2000; flex-direction: column; justify-content: center; align-items: center; }
         .leaderboard-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border); }
         .rank { font-weight: bold; width: 30px; color: var(--primary); }
         .user-info { flex-grow: 1; }
@@ -81,17 +87,17 @@
             </div>
             <div class="card balance-card"><p>মোট ব্যালেন্স</p><div class="balance-amount">৳ <span id="userBalance">0.00</span></div></div>
             <div class="card switch-container">
-                <div><strong>অটোমেটিক রিওয়ার্ড</strong><p style="font-size:11px; color:var(--text-secondary);">কপি লিংক টাস্কে অটো টাকা নিতে চান?</p></div>
+                <div><strong>অটোমেটিক রিওয়ার্ড</strong><p style="font-size:11px; color:var(--text-secondary);">কপি লিংক টাস্কে অটো পুরস্কার</p></div>
                 <label class="switch"><input type="checkbox" id="rewardToggle" checked onchange="toggleRewardSetting()"><span class="slider"></span></label>
             </div>
             <div class="tabs">
                 <div class="tab active" onclick="showSection('tasks')">টাস্ক</div>
-                <div class="tab" onclick="showSection('notifications')">নোটিশ <span id="notifBadge" style="background:red; color:white; border-radius:50%; padding:0 5px; font-size:10px; display:none">0</span></div>
+                <div class="tab" onclick="showSection('notifications')">নোটিশ <span id="notifBadge" style="background:red; color:white; border-radius:50%; padding:0 5px; font-size:10px; display:none;"></span></div>
                 <div class="tab" onclick="showSection('withdraw')">উত্তোলন</div>
                 <div class="tab" onclick="showSection('leaderboard')">লিডারবোর্ড</div>
             </div>
             <div id="tasks-section">
-                <div id="rewardOffWarning" class="reward-off-badge" style="display:none;">⚠️ সব টাস্কের রিওয়ার্ড বন্ধ আছে!</div>
+                <div id="rewardOffWarning" class="reward-off-badge" style="display:none;">⚠️ সব টাস্কের রিওয়ার্ড বন্ধ আছে!</div>
                 <div class="card"><h3>📢 উপলব্ধ টাস্ক</h3><div id="taskList"></div></div>
             </div>
             <div id="notifications-section" style="display: none;"><div class="card"><h3>🔔 নোটিশ বোর্ড</h3><div id="notificationList"></div></div></div>
@@ -106,7 +112,7 @@
                     </form>
                 </div>
             </div>
-            <div id="leaderboard-section" style="display: none;"><div class="card"><h3>🏆 শীর্ষ আয়কারী</h3><div id="leaderboardList"></div></div></div>
+            <div id="leaderboard-section" style="display: none;"><div class="card"><h3>🏆 শীর্ষ আয়কারী</h3><div id="leaderboardList"></div></div></div>
         </div>
 
         <div id="adminView" style="display: none;">
@@ -125,7 +131,7 @@
                     <form onsubmit="adminAddTask(event)">
                         <input type="text" id="newTaskTitle" placeholder="টাস্কের নাম" required>
                         <input type="text" id="newTaskLink" placeholder="লিংক" required>
-                        <div style="display: flex; gap: 10px;"><input type="number" id="newTaskReward" placeholder="পুরস্কার" required><select id="newTaskType"><option value="daily">ডেইলি</option><option value="onetime">ওয়ান টাইম</option><option value="copy">কপি</option></select></div>
+                        <div style="display: flex; gap: 10px;"><input type="number" id="newTaskReward" placeholder="পুরস্কার" required><select id="newTaskType"><option value="daily">Daily</option><option value="copy">Copy</option></select></div>
                         <button type="submit" class="btn-success" style="width:100%">+ টাস্ক অ্যাড</button>
                     </form><hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--border);">
                     <h4>📋 বর্তমান টাস্কসমূহ</h4><div id="adminTaskList"></div>
@@ -133,18 +139,18 @@
                 <div id="admin-broadcast" style="display:none;">
                     <h4>📢 সবাইকে নোটিশ</h4><textarea id="broadcastMsg" rows="3" placeholder="সবার জন্য নোটিশ..."></textarea>
                     <button onclick="sendBroadcast('global')" class="btn-primary" style="width:100%; margin-top:5px;">সবাইকে পাঠান</button><hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--border);">
-                    <h4>👤 নির্দিষ্ট ইউজারকে নোটিশ</h4><input type="text" id="personalTargetUid" placeholder="User Telegram ID"><textarea id="personalMsg" rows="3" placeholder="ইউজারের জন্য নোটিশ..."></textarea>
+                    <h4>👤 নির্দিষ্ট ইউজারকে নোটিশ</h4><input type="text" id="personalTargetUid" placeholder="User Telegram ID"><textarea id="personalMsg" rows="2" placeholder="ব্যক্তিগত বার্তা..."></textarea>
                     <button onclick="sendBroadcast('personal')" class="btn-warning" style="width:100%; margin-top:5px;">পাঠান</button>
                 </div>
                 <div id="admin-requests" style="display:none;"><div id="requestList"></div></div>
                 <div id="admin-settings" style="display:none;">
                     <h4>🔧 সেটিংস</h4>
                     <label style="margin-top:10px; display:block; font-weight:bold;">মেইনটেনেন্স মোড</label>
-                    <div style="display:flex; gap:10px; align-items:center; margin-top:5px;"><button id="maintenanceBtn" onclick="toggleMaintenance()" class="btn-warning">চালু করুন</button><small id="maintenanceStatus" style="color:var(--success)">বন্ধ</small></div>
+                    <div style="display:flex; gap:10px; align-items:center; margin-top:5px;"><button id="maintenanceBtn" onclick="toggleMaintenance()" class="btn-warning">চালু করুন</button><span id="maintenanceStatus" style="color:var(--success);">বন্ধ</span></div>
                     <input type="text" id="maintenanceMsg" placeholder="মেইনটেনেন্সের কারণ..." style="margin-top:5px;">
-                    <label style="margin-top:20px; display:block; font-weight:bold;">সব টাস্কের রেওয়ার্ড অন/অফ</label>
-                    <div class="switch-container" style="margin-top:10px;"><p style="font-size:11px; color:var(--text-secondary);">রেওয়ার্ড বন্ধ করলে কেউ টাকা পাবে না।</p><label class="switch"><input type="checkbox" id="globalRewardToggle" checked onchange="toggleGlobalReward()"><span class="slider"></span></label></div>
-                    <label style="margin-top:20px; display:block; font-weight:bold;">ম্যানুয়াল পেমেন্ট</label>
+                    <label style="margin-top:20px; display:block; font-weight:bold;">সব টাস্কের রেওয়ার্ড অন/অফ</label>
+                    <div class="switch-container" style="margin-top:10px;"><p style="font-size:11px; color:var(--text-secondary);">রেওয়ার্ড বন্ধ করলে কেউ টাকা পাবে না</p><label class="switch"><input type="checkbox" id="globalRewardToggle" checked onchange="toggleGlobalReward()"><span class="slider"></span></label></div>
+                    <label style="margin-top:20px; display:block; font-weight:bold;">ম্যানুয়াল পেমেন্ট</label>
                     <div style="display:flex; gap:10px;"><input type="text" id="editUserUid" placeholder="TG ID"><input type="number" id="editAmount" placeholder="Amount (+/-)"></div>
                     <button onclick="manualPayment()" class="btn-primary" style="width:100%; margin-top:5px;">ব্যালেন্স আপডেট</button>
                 </div>
@@ -155,7 +161,7 @@
     <div class="modal" id="taskModal">
         <div class="card modal-content">
             <h3 id="modalTitle">Task</h3>
-            <a id="modalLink" href="#" target="_blank" class="btn-primary" style="display:block; text-decoration:none; margin:15px 0;">জয়েন করুন</a>
+            <a id="modalLink" href="#" target="_blank" class="btn-primary" style="display:block; text-decoration:none; margin:15px 0;">জয়েন করুন</a>
             <div id="timerArea" style="display:none;"><h1 id="countdown" style="color:var(--primary)">5</h1></div>
             <button id="claimBtn" class="btn-success" style="display:none; width:100%;">টাকা নিন</button>
             <button onclick="closeModal()" class="btn-outline" style="width:100%; margin-top:10px;">বন্ধ করুন</button>
@@ -172,21 +178,35 @@
 
         if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
             currentUser = String(tg.initDataUnsafe.user.id);
-            // অটো ওপেন এবং ফুল স্ক্রিন কোড
             tg.ready(); 
             tg.expand(); 
             tg.enableClosingConfirmation();
         } else {
-            // বট ছাড়া ব্রাউজারে টেস্ট করার জন্য (লাইভ সার্ভারে দেওয়ার সময় এই লাইনটি মুছে দিবেন)
             currentUser = "8248792819"; 
         }
 
-        function detectVPN() { const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; const language = navigator.language; return { timeZone, language, isSuspicious: (timeZone !== 'Asia/Dhaka' && !language.startsWith('bn')) }; }
-        function showToast(msg) { const t = document.getElementById('toastMsg'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+        // ✅ FIXED: VPN Detection
+        function detectVPN() { 
+            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; 
+            const language = navigator.language; 
+            return { 
+                timeZone, 
+                language, 
+                isSuspicious: (timeZone !== 'Asia/Dhaka' && timeZone !== 'Asia/Kolkata')
+            };
+        }
 
+        function showToast(msg) { 
+            const t = document.getElementById('toastMsg'); 
+            t.innerText = msg; 
+            t.classList.add('show'); 
+            setTimeout(() => t.classList.remove('show'), 3000); 
+        }
+
+        // ✅ FIXED: Initialize App
         async function initApp() {
             if (!currentUser) {
-                document.body.innerHTML = '<div style="text-align:center; padding:50px; color:red;"><h1>Access Denied</h1><p>এই ওয়েবসাইটটি শুধুমাত্র টেলিগ্রাম বট থেকে ব্যবহার করা যাবে।</p></div>';
+                document.body.innerHTML = '<div style="text-align:center; padding:50px; color:red;"><h1>Access Denied</h1><p>এই ওয়েবসাইটটি শুধুমাত্র টেলিগ্রাম বট থেকে ব্যবহার করুন</p></div>';
                 return;
             }
             try {
@@ -197,153 +217,511 @@
                     username = tg.initDataUnsafe.user.username || 'N/A';
                 }
 
-                await fetch(`${API_URL}/register`, { 
+                // ✅ FIXED: Register user properly
+                const regRes = await fetch(`${API_URL}/register`, { 
                     method: 'POST', 
                     headers: { 'Content-Type': 'application/json' }, 
                     body: JSON.stringify({ uid: currentUser, name: name.trim(), username, deviceId: 'tg_' + currentUser, vpnInfo }) 
                 });
 
-                const adminRes = await fetch(`${API_URL}/check-admin/${currentUser}`); const adminData = await adminRes.json();
-                if(adminData.isAdmin) { isAdminUser = true; document.getElementById('roleBtn').style.display = 'inline-block'; }
+                if (!regRes.ok) {
+                    showToast("রেজিস্ট্রেশন ব্যর্থ!");
+                    console.error("Register error:", await regRes.text());
+                }
+
+                const adminRes = await fetch(`${API_URL}/check-admin/${currentUser}`); 
+                const adminData = await adminRes.json();
+                if(adminData.isAdmin) { 
+                    isAdminUser = true; 
+                    document.getElementById('roleBtn').style.display = 'inline-block'; 
+                }
                 renderDashboard();
-            } catch (error) { showToast("সার্ভার সংযোগ ব্যর্থ!"); }
+            } catch (error) { 
+                showToast("সার্ভার সংযোগ ব্যর্থ!"); 
+                console.error("Init error:", error);
+            }
         }
 
+        // ✅ FIXED: Render Dashboard with proper data
         async function renderDashboard() {
-            const userRes = await fetch(`${API_URL}/user/${currentUser}`); const me = await userRes.json(); if(!me) return;
-            document.getElementById('userBalance').innerText = me.balance; 
-            document.getElementById('profileName').innerText = me.name; 
-            document.getElementById('userUsername').innerText = me.username || me.uid;
-            
-            const vpnBadge = document.getElementById('userVpnStatus');
-            if(me.vpnInfo && me.vpnInfo.isSuspicious) { vpnBadge.className = 'vpn-badge'; vpnBadge.innerText = 'VPN'; } else { vpnBadge.className = 'safe-badge'; vpnBadge.innerText = 'Safe'; }
-            if(me.isBanned) { document.getElementById('warningBanner').style.display = 'block'; } else { document.getElementById('warningBanner').style.display = 'none'; }
-            if(me.settings && me.settings.autoReward !== undefined) { document.getElementById('rewardToggle').checked = me.settings.autoReward; }
+            try {
+                const userRes = await fetch(`${API_URL}/user/${currentUser}`); 
+                const me = await userRes.json(); 
+                
+                if(!me || me.error) {
+                    showToast("ইউজার ডেটা লোড ব্যর্থ!");
+                    return;
+                }
 
-            const settingsRes = await fetch(`${API_URL}/settings`); const settingsData = await settingsRes.json();
-            if(settingsData) {
-                if(settingsData.maintenanceMode && !isAdminUser) { document.getElementById('maintenanceText').innerText = settingsData.maintenanceMsg; document.getElementById('maintenanceOverlay').style.display = 'flex'; } else { document.getElementById('maintenanceOverlay').style.display = 'none'; }
-                if(settingsData.rewardEnabled === false) { document.getElementById('rewardOffWarning').style.display = 'block'; } else { document.getElementById('rewardOffWarning').style.display = 'none'; }
+                document.getElementById('userBalance').innerText = me.balance || 0; 
+                document.getElementById('profileName').innerText = me.name || 'User'; 
+                document.getElementById('userUsername').innerText = me.username || me.uid;
+                
+                const vpnBadge = document.getElementById('userVpnStatus');
+                if(me.vpnInfo && me.vpnInfo.isSuspicious) { 
+                    vpnBadge.className = 'vpn-badge'; 
+                    vpnBadge.innerText = 'VPN'; 
+                } else { 
+                    vpnBadge.className = 'safe-badge'; 
+                    vpnBadge.innerText = 'Safe'; 
+                }
+
+                if(me.isBanned) { 
+                    document.getElementById('warningBanner').style.display = 'block'; 
+                    document.getElementById('warningBanner').innerText = '❌ আপনার একাউন্ট ব্যান করা হয়েছে।';
+                } else { 
+                    document.getElementById('warningBanner').style.display = 'none'; 
+                }
+
+                if(me.settings && me.settings.autoReward !== undefined) { 
+                    document.getElementById('rewardToggle').checked = me.settings.autoReward; 
+                }
+
+                // Settings
+                const settingsRes = await fetch(`${API_URL}/settings`); 
+                const settingsData = await settingsRes.json();
+                if(settingsData) {
+                    if(settingsData.maintenanceMode && !isAdminUser) { 
+                        document.getElementById('maintenanceText').innerText = settingsData.maintenanceMsg || 'রক্ষণাবেক্ষণ চলছে'; 
+                        document.getElementById('maintenanceOverlay').style.display = 'flex'; 
+                    }
+                    if(settingsData.rewardEnabled === false) { 
+                        document.getElementById('rewardOffWarning').style.display = 'block'; 
+                    } else { 
+                        document.getElementById('rewardOffWarning').style.display = 'none'; 
+                    }
+                }
+
+                // Tasks
+                const taskRes = await fetch(`${API_URL}/tasks`); 
+                const tasks = await taskRes.json(); 
+                const taskContainer = document.getElementById('taskList');
+                
+                if(me.isBanned) { 
+                    taskContainer.innerHTML = '<p style="text-align:center; color:red;">ব্যান থাকায় টাস্ক করা যাবে না।</p>'; 
+                } else {
+                    taskContainer.innerHTML = tasks.map(task => {
+                        // ✅ FIXED: Proper number comparison
+                        let isCompleted = me.completedTasks && me.completedTasks.includes(Number(task.id));
+                        let btn = isCompleted ? 
+                            `<button class="btn-success" disabled>✓ সম্পন্ন</button>` : 
+                            (task.type === 'copy' ? 
+                                `<button class="btn-primary" onclick="copyLink(${task.id}, '${task.link}', ${task.reward}, '${task.title}')">কপি করুন</button>` :
+                                `<button class="btn-primary" onclick="openTask(${task.id}, '${task.title}', '${task.link}', ${task.reward})">খুলুন</button>`
+                            );
+                        return `<div class="task-item"><div class="task-info"><h4>${task.title}</h4><span>${task.type} | ৳${task.reward}</span></div>${btn}</div>`;
+                    }).join('');
+                }
+
+                // Notifications
+                const notifRes = await fetch(`${API_URL}/notifications/${currentUser}`); 
+                const notifs = await notifRes.json(); 
+                const notifList = document.getElementById('notificationList');
+                if(notifs.length > 0) {
+                    notifList.innerHTML = notifs.map(n => `<div class="notif-item"><div class="notif-icon">${n.type === 'personal' ? '👤' : '📢'}</div><div class="notif-content"><h5>${n.title}</h5><p>${n.msg}</p></div></div>`).join('');
+                    document.getElementById('notifBadge').style.display = 'inline-block'; 
+                    document.getElementById('notifBadge').innerText = notifs.length;
+                } else { 
+                    notifList.innerHTML = '<p style="text-align:center;">কোনো নোটিশ নেই</p>'; 
+                    document.getElementById('notifBadge').style.display = 'none'; 
+                }
+
+                if(isAdminUser) {
+                    renderAdminPanel();
+                }
+            } catch (error) {
+                showToast("ড্যাশবোর্ড লোড ব্যর্থ!");
+                console.error("Dashboard error:", error);
             }
-
-            const taskRes = await fetch(`${API_URL}/tasks`); const tasks = await taskRes.json(); const taskContainer = document.getElementById('taskList');
-            if(me.isBanned) { taskContainer.innerHTML = '<p style="text-align:center; color:red;">ব্যান থাকায় টাস্ক করা যাবে না।</p>'; } else {
-                taskContainer.innerHTML = tasks.map(task => {
-                    let isCompleted = me.completedTasks && me.completedTasks.includes(task.id);
-                    let btn = isCompleted ? `<button class="btn-success" disabled>সম্পন্ন</button>` : (task.type === 'copy' ? `<button class="btn-primary" onclick="copyLink(${task.id}, '${task.link}', ${task.reward}, '${task.title}')">কপি লিংক</button>` : `<button class="btn-primary" onclick="openTask(${task.id}, '${task.title}', '${task.link}', ${task.reward})">শুরু</button>`);
-                    return `<div class="task-item"><div class="task-info"><h4>${task.title}</h4><span>${task.type} | ৳${task.reward}</span></div>${btn}</div>`;
-                }).join('');
-            }
-
-            const notifRes = await fetch(`${API_URL}/notifications/${currentUser}`); const notifs = await notifRes.json(); const notifList = document.getElementById('notificationList');
-            if(notifs.length > 0) {
-                notifList.innerHTML = notifs.map(n => `<div class="notif-item"><div class="notif-icon">${n.type === 'personal' ? '👤' : '📢'}</div><div class="notif-content"><h5>${n.title} <span class="notif-badge ${n.type === 'personal' ? 'notif-personal' : 'notif-global'}">${n.type === 'personal' ? 'ব্যক্তিগত' : 'সাধারণ'}</span></h5><p>${n.msg}</p></div></div>`).join('');
-                document.getElementById('notifBadge').style.display = 'inline-block'; document.getElementById('notifBadge').innerText = notifs.length;
-            } else { notifList.innerHTML = '<p style="text-align:center;">কোনো নোটিশ নেই</p>'; document.getElementById('notifBadge').style.display = 'none'; }
         }
 
         async function renderLeaderboard() {
-            const res = await fetch(`${API_URL}/admin/users`, { headers: { 'admin-uid': currentUser } }); if(!res.ok) return; const users = await res.json();
-            document.getElementById('leaderboardList').innerHTML = users.sort((a, b) => b.balance - a.balance).map((u, i) => {
-                let r = i+1; if(i===0) r='🥇'; if(i===1) r='🥈'; if(i===2) r='🥉'; return `<div class="leaderboard-item"><div class="rank">${r}</div><div class="user-info"><strong>${u.name}</strong><br><small>@${u.username || u.uid}</small></div><div style="font-weight:bold; color:var(--success)">৳${u.balance}</div></div>`;
-            }).join('');
-        }
-
-        async function toggleRewardSetting() {
-            const isChecked = document.getElementById('rewardToggle').checked;
-            await fetch(`${API_URL}/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ uid: currentUser, deviceId: 'tg_'+currentUser, vpnInfo: detectVPN(), settings: { autoReward: isChecked } }) });
-            showToast(isChecked ? 'অটো রিওয়ার্ড চালু' : 'অটো রিওয়ার্ড বন্ধ');
-        }
-
-        let currentTaskId = null; let currentTaskData = null;
-        function openTask(id, title, link, reward) {
-            currentTaskId = id; currentTaskData = { title, link, reward }; document.getElementById('modalTitle').innerText = title;
-            const modalLink = document.getElementById('modalLink'); modalLink.href = link; modalLink.style.display = 'block'; document.getElementById('timerArea').style.display = 'none'; document.getElementById('claimBtn').style.display = 'none';
-            document.getElementById('taskModal').style.display = 'flex';
-        }
-        document.getElementById('modalLink').onclick = function() {
-            this.style.display = 'none'; const timerArea = document.getElementById('timerArea'); const countdown = document.getElementById('countdown'); timerArea.style.display = 'block'; let t = 5; countdown.innerText = t;
-            const iv = setInterval(() => { t--; countdown.innerText = t; if(t<=0) { clearInterval(iv); timerArea.style.display = 'none'; document.getElementById('claimBtn').style.display = 'block'; } }, 1000);
-        };
-        document.getElementById('claimBtn').onclick = async function() { await completeTask(currentTaskId); closeModal(); };
-        function closeModal() { document.getElementById('taskModal').style.display = 'none'; }
-
-        async function completeTask(id) {
-            if(!currentTaskData) return; const { title, reward } = currentTaskData;
-            const res = await fetch(`${API_URL}/complete-task`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ uid: currentUser, taskId: id, reward, title }) });
-            const result = await res.json(); if(result.success) { showToast('টাকা যোগ হয়েছে!'); renderDashboard(); } else { showToast(result.message); }
-        }
-
-        async function copyLink(id, link, reward, title) {
-            navigator.clipboard.writeText(link).then(async () => {
-                const userRes = await fetch(`${API_URL}/user/${currentUser}`); const user = await userRes.json();
-                if(user.settings && user.settings.autoReward !== false) {
-                    const res = await fetch(`${API_URL}/complete-task`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ uid: currentUser, taskId: id, reward, title }) });
-                    const result = await res.json(); if(result.success) { showToast('টাকা যোগ হয়েছে!'); renderDashboard(); } else { showToast(result.message); }
-                } else { showToast('লিংক কপি হয়েছে (রিওয়ার্ড বন্ধ)'); }
-            });
-        }
-
-        async function handleWithdraw(e) {
-            e.preventDefault(); const amount = document.getElementById('withdrawAmount').value; const method = document.getElementById('paymentMethod').value; const number = document.getElementById('paymentNumber').value;
-            const res = await fetch(`${API_URL}/withdraw`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: Date.now(), uid: currentUser, amount, method, number }) });
-            const data = await res.json(); if(data.success) { showToast('রিকোয়েস্ট পাঠানো হয়েছে'); document.getElementById('withdrawAmount').value = ''; } else { showToast(data.error || 'এরর'); }
-        }
-
-        async function renderAdminPanel() {
-            const usersRes = await fetch(`${API_URL}/admin/users`, { headers: { 'admin-uid': currentUser } }); if(!usersRes.ok) { showToast('এডমিন এক্সেস ব্যর্থ!'); switchRole(); return; }
-            const users = await usersRes.json(); let deviceCounts = {}; users.forEach(u => { deviceCounts[u.deviceId] = (deviceCounts[u.deviceId] || 0) + 1; });
-            document.getElementById('userListAdmin').innerHTML = users.map(u => { 
-                let isMulti = deviceCounts[u.deviceId] > 1; let vpnBadgeHtml = (u.vpnInfo && u.vpnInfo.isSuspicious) ? `<span class="vpn-badge">VPN</span>` : '';
-                return `<div class="card" style="border-left: 5px solid ${isMulti ? 'red' : 'green'}; padding:10px; margin-bottom:8px;"><strong>${u.name}</strong> ${vpnBadgeHtml}<br><small>@${u.username || ''} | ৳${u.balance}</small><br>${isMulti ? '<small style="color:red;">⚠️ ডুপ্লিকেট</small><br>' : ''}<div style="margin-top:5px; gap:5px;">${u.isBanned ? `<button onclick="toggleBan('${u.uid}')" class="btn-success" style="padding:4px 8px; font-size:12px;">Unban</button>` : `<button onclick="toggleBan('${u.uid}')" class="btn-danger" style="padding:4px 8px; font-size:12px;">Ban</button>`}<button onclick="prefillEdit('${u.uid}')" class="btn-primary" style="padding:4px 8px; font-size:12px;">Edit</button></div></div>`;
-            }).join('');
-
-            const taskRes = await fetch(`${API_URL}/tasks`); const tasks = await taskRes.json();
-            document.getElementById('adminTaskList').innerHTML = tasks.length ? tasks.map(t => `<div class="task-item" style="margin-bottom: 5px;"><div class="task-info"><h4 style="font-size:14px">${t.title}</h4><span>৳${t.reward} | ${t.type}</span></div><button onclick="adminDeleteTask(${t.id})" class="btn-danger" style="padding:4px 8px; font-size:12px;">Delete</button></div>`).join('') : '<p>কোনো টাস্ক নেই</p>';
-
-            const reqRes = await fetch(`${API_URL}/withdraws`, { headers: { 'admin-uid': currentUser } }); const reqs = await reqRes.json();
-            document.getElementById('requestList').innerHTML = reqs.length ? reqs.map(r => `<div class="card" style="padding:10px; border:1px solid #ddd;"><b>${r.method} - ৳${r.amount}</b><br>No: ${r.number} | TG: ${r.uid}<br><div style="margin-top:5px;"><button onclick="approveWithdraw(${r.id}, 'approved')" class="btn-success" style="font-size:12px">Approve</button><button onclick="approveWithdraw(${r.id}, 'rejected')" class="btn-danger" style="font-size:12px">Reject</button></div></div>`).join('') : 'কোনো রিকোয়েস্ট নেই';
-
-            const setRes = await fetch(`${API_URL}/settings`); const sett = await setRes.json();
-            if(sett) {
-                const btn = document.getElementById('maintenanceBtn'); const txt = document.getElementById('maintenanceStatus');
-                if(sett.maintenanceMode) { btn.innerText = "বন্ধ করুন"; btn.className = "btn-danger"; txt.innerText = "চালু"; txt.style.color = "var(--danger)"; } else { btn.innerText = "চালু করুন"; btn.className = "btn-warning"; txt.innerText = "বন্ধ"; txt.style.color = "var(--success)"; }
-                if(sett.maintenanceMsg) document.getElementById('maintenanceMsg').value = sett.maintenanceMsg;
-                document.getElementById('globalRewardToggle').checked = sett.rewardEnabled !== false;
+            try {
+                const res = await fetch(`${API_URL}/admin/users`, { headers: { 'admin-uid': currentUser } }); 
+                if(!res.ok) {
+                    showToast("লিডারবোর্ড লোড ব্যর্থ!");
+                    return;
+                }
+                const users = await res.json();
+                document.getElementById('leaderboardList').innerHTML = users.sort((a, b) => b.balance - a.balance).map((u, i) => {
+                    let r = i+1; 
+                    if(i===0) r='🥇'; 
+                    if(i===1) r='🥈'; 
+                    if(i===2) r='🥉'; 
+                    return `<div class="leaderboard-item"><div class="rank">${r}</div><div class="user-info"><strong>${u.name}</strong><br><small>৳${u.balance}</small></div></div>`;
+                }).join('');
+            } catch (error) {
+                console.error("Leaderboard error:", error);
             }
         }
 
-        async function toggleBan(uid) { await fetch(`${API_URL}/admin/toggle-ban`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'admin-uid': currentUser }, body: JSON.stringify({ uid }) }); renderAdminPanel(); }
-        function prefillEdit(uid) { document.getElementById('editUserUid').value = uid; document.getElementById('editAmount').value = ''; showToast('ID সিলেক্ট হয়েছে'); }
+        async function toggleRewardSetting() {
+            try {
+                const isChecked = document.getElementById('rewardToggle').checked;
+                await fetch(`${API_URL}/register`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ uid: currentUser, deviceId: 'tg_'+currentUser, vpnInfo: detectVPN(), settings: { autoReward: isChecked } }) 
+                });
+                showToast(isChecked ? 'অটো রিওয়ার্ড চালু' : 'অটো রিওয়ার্ড বন্ধ');
+            } catch (error) {
+                showToast("সেটিংস আপডেট ব্যর্থ!");
+            }
+        }
+
+        let currentTaskId = null; 
+        let currentTaskData = null;
+
+        function openTask(id, title, link, reward) {
+            currentTaskId = id; 
+            currentTaskData = { title, link, reward }; 
+            document.getElementById('modalTitle').innerText = title;
+            const modalLink = document.getElementById('modalLink'); 
+            modalLink.href = link; 
+            modalLink.style.display = 'block'; 
+            document.getElementById('timerArea').style.display = 'none'; 
+            document.getElementById('claimBtn').style.display = 'none';
+            document.getElementById('taskModal').style.display = 'flex';
+        }
+
+        document.getElementById('modalLink').onclick = function(e) {
+            e.preventDefault();
+            this.style.display = 'none'; 
+            const timerArea = document.getElementById('timerArea'); 
+            const countdown = document.getElementById('countdown'); 
+            timerArea.style.display = 'block'; 
+            let t = 5;
+            countdown.innerText = t;
+            const iv = setInterval(() => { 
+                t--; 
+                countdown.innerText = t; 
+                if(t<=0) { 
+                    clearInterval(iv); 
+                    timerArea.style.display = 'none'; 
+                    document.getElementById('claimBtn').style.display = 'block';
+                } 
+            }, 1000);
+            window.open(this.href, '_blank');
+        };
+
+        document.getElementById('claimBtn').onclick = async function() { 
+            await completeTask(currentTaskId); 
+            closeModal(); 
+        };
+
+        function closeModal() { 
+            document.getElementById('taskModal').style.display = 'none'; 
+        }
+
+        async function completeTask(id) {
+            try {
+                if(!currentTaskData) return; 
+                const { title, reward } = currentTaskData;
+                const res = await fetch(`${API_URL}/complete-task`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ uid: currentUser, taskId: Number(id), reward, title }) 
+                });
+                const result = await res.json(); 
+                if(result.success) { 
+                    showToast('টাকা যোগ হয়েছে!'); 
+                    renderDashboard(); 
+                } else { 
+                    showToast(result.message || 'টাস্ক সম্পন্ন ব্যর্থ!'); 
+                }
+            } catch (error) {
+                showToast("টাস্ক সম্পন্ন ব্যর্থ!");
+                console.error("Complete task error:", error);
+            }
+        }
+
+        async function copyLink(id, link, reward, title) {
+            try {
+                navigator.clipboard.writeText(link).then(async () => {
+                    const userRes = await fetch(`${API_URL}/user/${currentUser}`); 
+                    const user = await userRes.json();
+                    if(user.settings && user.settings.autoReward !== false) {
+                        const res = await fetch(`${API_URL}/complete-task`, { 
+                            method: 'POST', 
+                            headers: { 'Content-Type': 'application/json' }, 
+                            body: JSON.stringify({ uid: currentUser, taskId: Number(id), reward, title }) 
+                        });
+                        const result = await res.json(); 
+                        if(result.success) { 
+                            showToast('টাকা যোগ হয়েছে!'); 
+                            renderDashboard(); 
+                        } else { 
+                            showToast(result.message || 'লিংক কপি হয়েছে'); 
+                        }
+                    } else { 
+                        showToast('লিংক কপি হয়েছে (রিওয়ার্ড বন্ধ)'); 
+                    }
+                });
+            } catch (error) {
+                showToast("লিংক কপি ব্যর্থ!");
+            }
+        }
+
+        async function handleWithdraw(e) {
+            try {
+                e.preventDefault(); 
+                const amount = document.getElementById('withdrawAmount').value; 
+                const method = document.getElementById('paymentMethod').value; 
+                const number = document.getElementById('paymentNumber').value;
+                if(!amount || !method || !number) {
+                    showToast("সব তথ্য দিন");
+                    return;
+                }
+                const res = await fetch(`${API_URL}/withdraw`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ id: Date.now(), uid: currentUser, amount, method, number }) 
+                });
+                const data = await res.json(); 
+                if(data.success) { 
+                    showToast('রিকোয়েস্ট পাঠানো হয়েছে'); 
+                    document.getElementById('withdrawAmount').value = ''; 
+                    document.getElementById('paymentNumber').value = ''; 
+                    renderDashboard();
+                } else {
+                    showToast(data.error || 'উত্তোলন ব্যর্থ!');
+                }
+            } catch (error) {
+                showToast("উত্তোলন ব্যর্থ!");
+                console.error("Withdraw error:", error);
+            }
+        }
+
+        async function renderAdminPanel() {
+            try {
+                const usersRes = await fetch(`${API_URL}/admin/users`, { headers: { 'admin-uid': currentUser } }); 
+                if(!usersRes.ok) { 
+                    showToast('এডমিন এক্সেস ব্যর্থ!'); 
+                    return;
+                }
+                const users = await usersRes.json(); 
+                let deviceCounts = {}; 
+                users.forEach(u => { deviceCounts[u.deviceId] = (deviceCounts[u.deviceId] || 0) + 1; });
+                
+                document.getElementById('userListAdmin').innerHTML = users.map(u => { 
+                    let isMulti = deviceCounts[u.deviceId] > 1; 
+                    let vpnBadgeHtml = (u.vpnInfo && u.vpnInfo.isSuspicious) ? `<span class="vpn-badge">VPN</span>` : '';
+                    return `<div class="card" style="border-left: 5px solid ${isMulti ? 'red' : 'green'}; padding:10px; margin-bottom:8px;"><strong>${u.name}</strong> ${vpnBadgeHtml}<br><small>@${u.username || u.uid} | ৳${u.balance}</small><br><button class="btn-warning" style="margin-top:5px; font-size:11px;" onclick="toggleBan('${u.uid}')">ব্যান টগল</button><button class="btn-outline" style="margin-top:5px; font-size:11px; margin-left:5px;" onclick="prefillEdit('${u.uid}')">এডিট</button></div>`;
+                }).join('');
+
+                const taskRes = await fetch(`${API_URL}/tasks`); 
+                const tasks = await taskRes.json();
+                document.getElementById('adminTaskList').innerHTML = tasks.length ? tasks.map(t => `<div class="task-item" style="margin-bottom: 5px;"><div class="task-info"><h4 style="font-size:14px;">${t.title}</h4><span>${t.type} | ৳${t.reward}</span></div><button class="btn-danger" style="font-size:11px;" onclick="adminDeleteTask(${t.id})">ডিলিট</button></div>`).join('') : '<p>কোনো টাস্ক নেই</p>';
+
+                const reqRes = await fetch(`${API_URL}/withdraws`, { headers: { 'admin-uid': currentUser } }); 
+                const reqs = await reqRes.json();
+                document.getElementById('requestList').innerHTML = reqs.length ? reqs.map(r => `<div class="card" style="padding:10px; border:1px solid var(--border);"><b>${r.method} - ৳${r.amount}</b><br><small>${r.number}</small><br><small>@${r.uid}</small><br><button class="btn-success" style="margin-top:5px; font-size:11px;" onclick="approveWithdraw(${r.id}, 'approved')">অনুমোদন</button><button class="btn-danger" style="margin-top:5px; font-size:11px; margin-left:5px;" onclick="approveWithdraw(${r.id}, 'rejected')">বাতিল</button></div>`).join('') : '<p>কোনো রিকোয়েস্ট নেই</p>';
+
+                const setRes = await fetch(`${API_URL}/settings`); 
+                const sett = await setRes.json();
+                if(sett) {
+                    const btn = document.getElementById('maintenanceBtn'); 
+                    const txt = document.getElementById('maintenanceStatus');
+                    if(sett.maintenanceMode) { 
+                        btn.innerText = "বন্ধ করুন"; 
+                        btn.className = "btn-danger"; 
+                        txt.innerText = "চালু"; 
+                        txt.style.color = "var(--danger)"; 
+                    } else { 
+                        btn.innerText = "চালু করুন"; 
+                        btn.className = "btn-warning"; 
+                        txt.innerText = "বন্ধ"; 
+                        txt.style.color = "var(--success)"; 
+                    }
+                    if(sett.maintenanceMsg) document.getElementById('maintenanceMsg').value = sett.maintenanceMsg;
+                    if(document.getElementById('globalRewardToggle')) {
+                        document.getElementById('globalRewardToggle').checked = sett.rewardEnabled !== false;
+                    }
+                }
+            } catch (error) {
+                console.error("Admin panel error:", error);
+            }
+        }
+
+        async function toggleBan(uid) { 
+            try {
+                await fetch(`${API_URL}/admin/toggle-ban`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json', 'admin-uid': currentUser }, 
+                    body: JSON.stringify({ uid }) 
+                });
+                showToast('ব্যান স্ট্যাটাস পরিবর্তিত');
+                renderAdminPanel();
+            } catch (error) {
+                showToast("ব্যান ব্যর্থ!");
+            }
+        }
+
+        function prefillEdit(uid) { 
+            document.getElementById('editUserUid').value = uid; 
+            document.getElementById('editAmount').value = ''; 
+            showToast('ID সিলেক্ট হয়েছে'); 
+        }
+
         async function manualPayment() {
-            let uid = document.getElementById('editUserUid').value.trim(); let amt = document.getElementById('editAmount').value; if(!uid || !amt) { showToast('তথ্য দিন'); return; }
-            await fetch(`${API_URL}/admin/update-balance`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'admin-uid': currentUser }, body: JSON.stringify({ uid, amount: amt }) }); showToast('আপডেট সফল'); document.getElementById('editUserUid').value = ''; document.getElementById('editAmount').value = ''; renderAdminPanel();
+            try {
+                let uid = document.getElementById('editUserUid').value.trim(); 
+                let amt = document.getElementById('editAmount').value; 
+                if(!uid || !amt) { 
+                    showToast('তথ্য দিন'); 
+                    return; 
+                }
+                await fetch(`${API_URL}/admin/update-balance`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json', 'admin-uid': currentUser }, 
+                    body: JSON.stringify({ uid, amount: amt }) 
+                });
+                showToast('ব্যালেন্স আপডেট হয়েছে');
+                renderAdminPanel();
+            } catch (error) {
+                showToast("আপডেট ব্যর্থ!");
+            }
         }
+
         async function adminAddTask(e) {
-            e.preventDefault(); const task = { id: Date.now(), title: document.getElementById('newTaskTitle').value, link: document.getElementById('newTaskLink').value, reward: parseFloat(document.getElementById('newTaskReward').value), type: document.getElementById('newTaskType').value };
-            await fetch(`${API_URL}/tasks`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'admin-uid': currentUser }, body: JSON.stringify(task) }); showToast('টাস্ক অ্যাড হয়েছে'); e.target.reset(); renderAdminPanel();
+            try {
+                e.preventDefault(); 
+                const task = { 
+                    id: Date.now(), 
+                    title: document.getElementById('newTaskTitle').value, 
+                    link: document.getElementById('newTaskLink').value, 
+                    reward: parseFloat(document.getElementById('newTaskReward').value),
+                    type: document.getElementById('newTaskType').value
+                };
+                await fetch(`${API_URL}/tasks`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json', 'admin-uid': currentUser }, 
+                    body: JSON.stringify(task) 
+                }); 
+                showToast('টাস্ক যোগ হয়েছে');
+                document.getElementById('newTaskTitle').value = '';
+                document.getElementById('newTaskLink').value = '';
+                document.getElementById('newTaskReward').value = '';
+                renderAdminPanel();
+            } catch (error) {
+                showToast("টাস্ক যোগ ব্যর্থ!");
+            }
         }
-        async function adminDeleteTask(id) { if(!confirm("ডিলিট?")) return; await fetch(`${API_URL}/tasks/${id}`, { method: 'DELETE', headers: { 'admin-uid': currentUser } }); renderAdminPanel(); }
+
+        async function adminDeleteTask(id) { 
+            try {
+                if(!confirm("ডিলিট করতে চান?")) return; 
+                await fetch(`${API_URL}/tasks/${id}`, { 
+                    method: 'DELETE', 
+                    headers: { 'admin-uid': currentUser } 
+                }); 
+                showToast('টাস্ক ডিলিট হয়েছে');
+                renderAdminPanel();
+            } catch (error) {
+                showToast("ডিলিট ব্যর্থ!");
+            }
+        }
+
         async function sendBroadcast(type) {
-            let title = type === 'global' ? "সবার নোটিশ" : "ব্যক্তিগত নোটিশ"; let msg = type === 'global' ? document.getElementById('broadcastMsg').value : document.getElementById('personalMsg').value; let target = type === 'global' ? null : document.getElementById('personalTargetUid').value;
-            if(!msg || (type === 'personal' && !target)) { showToast('তথ্য দিন'); return; }
-            await fetch(`${API_URL}/notification`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'admin-uid': currentUser }, body: JSON.stringify({ type, target, title, msg }) }); showToast('নোটিশ গেছে'); document.getElementById('broadcastMsg').value = ''; document.getElementById('personalMsg').value = '';
+            try {
+                let title = type === 'global' ? "সবার নোটিশ" : "ব্যক্তিগত নোটিশ"; 
+                let msg = type === 'global' ? document.getElementById('broadcastMsg').value : document.getElementById('personalMsg').value;
+                let target = type === 'global' ? '' : document.getElementById('personalTargetUid').value;
+                if(!msg || (type === 'personal' && !target)) { 
+                    showToast('তথ্য দিন'); 
+                    return; 
+                }
+                await fetch(`${API_URL}/notification`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json', 'admin-uid': currentUser }, 
+                    body: JSON.stringify({ type, target, title, msg }) 
+                });
+                showToast('নোটিশ পাঠানো হয়েছে');
+                if(type === 'global') document.getElementById('broadcastMsg').value = '';
+                else {
+                    document.getElementById('personalTargetUid').value = '';
+                    document.getElementById('personalMsg').value = '';
+                }
+            } catch (error) {
+                showToast("নোটিশ পাঠানো ব্যর্থ!");
+            }
         }
-        async function approveWithdraw(id, status) { await fetch(`${API_URL}/withdraw-action`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'admin-uid': currentUser }, body: JSON.stringify({ id, status }) }); renderAdminPanel(); }
+
+        async function approveWithdraw(id, status) { 
+            try {
+                await fetch(`${API_URL}/withdraw-action`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json', 'admin-uid': currentUser }, 
+                    body: JSON.stringify({ id, status }) 
+                });
+                showToast('স্ট্যাটাস আপডেট হয়েছে');
+                renderAdminPanel();
+            } catch (error) {
+                showToast("আপডেট ব্যর্থ!");
+            }
+        }
+
         async function toggleMaintenance() {
-            const isOn = document.getElementById('maintenanceBtn').innerText === "বন্ধ করুন"; const msg = document.getElementById('maintenanceMsg').value; const setRes = await fetch(`${API_URL}/settings`); const sett = await setRes.json();
-            await fetch(`${API_URL}/settings`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'admin-uid': currentUser }, body: JSON.stringify({ maintenanceMode: !isOn, maintenanceMsg: msg, rewardEnabled: sett.rewardEnabled !== false }) }); renderAdminPanel(); renderDashboard();
+            try {
+                const isOn = document.getElementById('maintenanceBtn').innerText === "বন্ধ করুন"; 
+                const msg = document.getElementById('maintenanceMsg').value; 
+                const setRes = await fetch(`${API_URL}/settings`); 
+                const sett = await setRes.json();
+                await fetch(`${API_URL}/settings`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json', 'admin-uid': currentUser }, 
+                    body: JSON.stringify({ maintenanceMode: !isOn, maintenanceMsg: msg }) 
+                });
+                showToast(isOn ? 'মেইনটেনেন্স বন্ধ' : 'মেইনটেনেন্স চালু');
+                renderAdminPanel();
+            } catch (error) {
+                showToast("পরিবর্তন ব্যর্থ!");
+            }
         }
+
         async function toggleGlobalReward() {
-            const isOn = document.getElementById('globalRewardToggle').checked; const setRes = await fetch(`${API_URL}/settings`); const sett = await setRes.json();
-            await fetch(`${API_URL}/settings`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'admin-uid': currentUser }, body: JSON.stringify({ maintenanceMode: sett.maintenanceMode || false, maintenanceMsg: sett.maintenanceMsg || '', rewardEnabled: isOn }) }); renderAdminPanel(); renderDashboard();
+            try {
+                const isOn = document.getElementById('globalRewardToggle').checked; 
+                const setRes = await fetch(`${API_URL}/settings`); 
+                const sett = await setRes.json();
+                await fetch(`${API_URL}/settings`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json', 'admin-uid': currentUser }, 
+                    body: JSON.stringify({ maintenanceMode: sett.maintenanceMode, rewardEnabled: isOn }) 
+                });
+                showToast(isOn ? 'রিওয়ার্ড চালু' : 'রিওয়ার্ড বন্ধ');
+            } catch (error) {
+                showToast("পরিবর্তন ব্যর্থ!");
+            }
         }
 
-        function showSection(id) { ['tasks', 'notifications', 'withdraw', 'leaderboard'].forEach(s => document.getElementById(s + '-section').style.display = (s === id ? 'block' : 'none')); document.querySelectorAll('#userView .tab').forEach(t => t.classList.remove('active')); event.target.classList.add('active'); if(id === 'leaderboard') renderLeaderboard(); }
-        function showAdminSection(id) { ['users', 'manageTasks', 'broadcast', 'requests', 'settings'].forEach(s => document.getElementById('admin-' + s).style.display = (s === id ? 'block' : 'none')); document.querySelectorAll('#adminView .tab').forEach(t => t.classList.remove('active')); event.target.classList.add('active'); if(id !== 'broadcast') renderAdminPanel(); }
-        function switchRole() { const u = document.getElementById('userView'); const a = document.getElementById('adminView'); if(u.style.display === 'none') { u.style.display = 'block'; a.style.display = 'none'; renderDashboard(); } else { u.style.display = 'none'; a.style.display = 'block'; renderAdminPanel(); } }
-        function toggleTheme() { document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
+        function showSection(id) { 
+            ['tasks', 'notifications', 'withdraw', 'leaderboard'].forEach(s => document.getElementById(s + '-section').style.display = (s === id ? 'block' : 'none')); 
+            if(id === 'leaderboard') renderLeaderboard();
+        }
 
+        function showAdminSection(id) { 
+            ['users', 'manageTasks', 'broadcast', 'requests', 'settings'].forEach(s => document.getElementById('admin-' + s).style.display = (s === id ? 'block' : 'none'));
+        }
+
+        function switchRole() { 
+            const u = document.getElementById('userView'); 
+            const a = document.getElementById('adminView'); 
+            if(u.style.display === 'none') { 
+                u.style.display = 'block'; 
+                a.style.display = 'none'; 
+            } else { 
+                u.style.display = 'none'; 
+                a.style.display = 'block'; 
+            }
+        }
+
+        function toggleTheme() { 
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            document.documentElement.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark'); 
+        }
+
+        // Initialize
         initApp();
     </script>
 </body>
